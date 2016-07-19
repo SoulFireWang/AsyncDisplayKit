@@ -236,7 +236,7 @@ NSString *NSStringFromASHierarchyChangeType(_ASHierarchyChangeType changeType)
     for (_ASHierarchySectionChange *change in _reloadSectionChanges) {
       NSIndexSet *newSections = [change.indexSet as_indexesByMapping:^(NSUInteger idx) {
         NSUInteger newSec = [self newSectionForOldSection:idx];
-        NSAssert(newSec != NSNotFound, @"Request to reload deleted section %lu", (unsigned long)idx);
+        ASDisplayNodeAssert(newSec != NSNotFound, @"Request to reload and delete same section %zu", idx);
         return newSec;
       }];
       
@@ -292,7 +292,6 @@ NSString *NSStringFromASHierarchyChangeType(_ASHierarchyChangeType changeType)
       _ASHierarchyItemChange *insertItemChangeFromReloadChange = [[_ASHierarchyItemChange alloc] initWithChangeType:_ASHierarchyChangeTypeInsert indexPaths:newIndexPaths animationOptions:change.animationOptions presorted:NO];
       [_insertItemChanges addObject:insertItemChangeFromReloadChange];
     }
-    _reloadItemChanges = nil;
     
     // Ignore item deletes in reloaded/deleted sections.
     [_ASHierarchyItemChange sortAndCoalesceChanges:_deleteItemChanges ignoringChangesInSections:_deletedSections];
